@@ -48,6 +48,46 @@ def stdDev(list):
     
 print(stdDev(stockA))
 
+# Define covariance
+def covar(listX, listY):
+    """Takes two lists and calculates their covariance.  Will trim the lists to an equal length
+    if one is longer than the other so that the calculation can be run."""
+    
+    # Measure the length of the two lists and trim to length if necessary.  Exclude ticker.
+    listX = listX[1:]
+    listY = listY[1:]
+    
+    # determine which list is the shorter
+    shorter = len(listX)
+    if (len(listY) < shorter):
+        shorter = len(listY)
+        
+    # Assign N to the smaller value    
+    N = shorter
+    
+    # Trim the longer list, if they are not equal in size
+    if (len(listY) > len(listX)):
+        listY = listY[:len(listX)]
+    elif (len(listX) > len(listY)):
+        listX = listX[:len(listY)]
+        
+    # Compute mean for each list
+    meanX = sum(listX) / N
+    meanY = sum(listY) / N
+    
+    # Compute numerator for covariance by multiplying Sum Xi - XBar & Yi - YBar    
+    productList = []
+    for element in range(N):
+        productList.append((listX[element] - meanX) * (listY[element] - meanY))
+
+    sumProduct = sum(productList)
+    
+    # Compute denominator for sample covariance
+    covariance = sumProduct / (N - 1)
+    
+    return covariance
+    
+
 # Function that iterates through the datasets and finds correlations
 
 # --- Main body of the program (genetic algorithm) ---
