@@ -18,6 +18,8 @@ stockD = ["EE",
 targetCorrelation = 0
 targetNumAssets = 0
 
+data = [stockA, stockB, stockC, stockD]
+
 # --- Define statistical functions ---
 
 # Define standard deviation
@@ -31,8 +33,6 @@ def stdDev(list, limiter=10):
     # Compute N and mean values
     N = len(newList)    
     mean = sum(newList) / N
-    
-    print(newList)
     
     # Take sliced array and calculate sum of all Xi - Mean values
     varianceList = []
@@ -99,22 +99,42 @@ def correlate(asset1, asset2):
         
     # Assign limiter to the smaller value    
     limiter = shorter
-    print(limiter)
-    print(len(asset2))
     
     stdev1 = stdDev(asset1, limiter)
     stdev2 = stdDev(asset2, limiter)
     
-    print("Covariance: ", covariance)
-    print("stdev1: ", stdev1)
-    print("stdev2: ", stdev2)
-    print("correlation: ", covariance / (stdev1 * stdev2))
-    
     return covariance / (stdev1 * stdev2)
 
-print(correlate(stockA, stockB))
 
 # Function that iterates through the datasets and finds correlations
+def correlationMap(dataset):
+    """Takes a list of lists and runs correlation on each pair within the dataset,
+    outputting them into a new list containing unique correlations"""
+    
+    # Count the number of sublists in the dataset
+    assetCount = len(dataset)
+    
+    # Define empty list to store correlation pairs
+    results = []
+    
+    # Loop through and run correlate() function
+    # Be sure to include the first element ticker to identify which assets produced results
+    i = 0
+    while i < len(dataset):
+        for list in dataset:
+            print("\n", list[0], dataset[i][0])
+            print("list: ", list)
+            print("i: ", i)
+            print("dataset[i]: ", dataset[i])
+            print("dataset.index(list): ", dataset.index(list))
+            if (list != dataset[i]) & (dataset.index(list) > i):
+                print("Running correlation between "+list[0]+" and "+dataset[i][0]+"...")
+                results.append([[list[0], dataset[i][0]], [correlate(list, dataset[i])]])
+        i += 1
+        
+    print(results)
+    
+correlationMap(data)
 
 # --- Main body of the program (genetic algorithm) ---
 
