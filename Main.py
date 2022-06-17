@@ -21,17 +21,18 @@ targetNumAssets = 0
 # --- Define statistical functions ---
 
 # Define standard deviation
-def stdDev(list):
-    """Takes a list as an argument and will return standard deviation of the 2nd - last indices"""
-    
-    print(list)
+def stdDev(list, limiter=10):
+    """Takes a list as an argument and will return standard deviation of the list starting at
+    the second index to avoid the ticker, and up to the index specified by a limiter argument"""
     
     # Slice the list to exclude ticker
-    newList = list[1:]
+    newList = list[1:limiter]
     
     # Compute N and mean values
     N = len(newList)    
     mean = sum(newList) / N
+    
+    print(newList)
     
     # Take sliced array and calculate sum of all Xi - Mean values
     varianceList = []
@@ -45,8 +46,6 @@ def stdDev(list):
     
     return stdevX
     
-    
-print(stdDev(stockA))
 
 # Define covariance
 def covar(listX, listY):
@@ -87,6 +86,33 @@ def covar(listX, listY):
     
     return covariance
     
+
+# Correlation function
+def correlate(asset1, asset2):
+    """Takes two lists and computes correlation from sample covariance and standard deviation"""
+    covariance = covar(asset1, asset2)
+    
+    # Define limiter
+    shorter = len(asset1)
+    if (len(asset2) < shorter):
+        shorter = len(asset2)
+        
+    # Assign limiter to the smaller value    
+    limiter = shorter
+    print(limiter)
+    print(len(asset2))
+    
+    stdev1 = stdDev(asset1, limiter)
+    stdev2 = stdDev(asset2, limiter)
+    
+    print("Covariance: ", covariance)
+    print("stdev1: ", stdev1)
+    print("stdev2: ", stdev2)
+    print("correlation: ", covariance / (stdev1 * stdev2))
+    
+    return covariance / (stdev1 * stdev2)
+
+print(correlate(stockA, stockB))
 
 # Function that iterates through the datasets and finds correlations
 
