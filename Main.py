@@ -189,12 +189,21 @@ def assign_weights(*assets):
 
     return weighted_list
 
-assign_weights(stockA, stockB, stockC, stockD)
+usedAssets = assign_weights(stockA, stockB, stockC, stockD)
 
 
-def weighted_risk(*assets):
+def weighted_risk(assets):
     """Takes variable number of assets and their weights as a list, and calculates the weighted portfolio risk"""
-    print(assets)
+    weight_list = []
+    for asset in assets:
+        weight_list.append(asset[2] * asset[1])
+    
+    sumproduct = sum(weight_list)
+    print("Weighted Portfolio Risk: ", sumproduct)
+
+    return sumproduct
+
+weighted_risk(usedAssets)
 
 
 # --- Main body of the program (genetic algorithm) ---
