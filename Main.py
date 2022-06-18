@@ -1,5 +1,6 @@
 
 import math
+import random
 
 # Define mock datasets
 stockA = ["CMG", 1247.49, 1233.56, 1223.38, 1270.96, 1338.43, 1362.99, 1387.97, 1355.75, 1390.94]
@@ -130,19 +131,113 @@ def correlationMap(dataset):
                 results.append([[list[0], dataset[i][0]], [correlate(list, dataset[i])]])
         i += 1
 
+# ---------- Utility functions for calculating weighted portfolio risk ---------- 
+
+def assign_weights(*assets):
+    """Takes a list of assets and converts to a new list with randomly assigned weights"""
+    
+    # Create new list to return
+    weighted_list = []
+
+    # Keep track of the cumlative percentage already applied to assets
+    cumulative_weight = 0
+
+    # TODO: Start at a random index using range(len(assets)) instead of index 0 each time to make random assignment more fair
+    for asset in assets:
+
+        weight = random.uniform(0,1)
+        print("Proposed weight: ", weight)
+
+        # Assess whether this weight would cause the cumulative weight to exceed 1
+        if (cumulative_weight + weight > 1):
+            print("This weight would exceed 100%.  Modifying...")
+            weight = 1 - cumulative_weight
+            print("Modified to ", weight)
+
+        weighted_list.append([asset[0], stdDev(asset), weight])
+        cumulative_weight += weight
+
+    # Assess whether there are any assets that have not received any weight
+    empty_weights = []
+
+    # If so, split the largest existing weight and assign that to the remaining assets randomly...
+    # First append those assets' tickers to a new list
+    for asset in weighted_list:
+        if (asset[2] == 0):
+            empty_weights.append(asset[0])
+
+    # Then find those tickers in the weighted_list and assign them new weights by dividing the largest weight
+    for asset in weighted_list:
+        if (asset[0] in empty_weights):
+            print("Empty asset weight:", asset)
+
+            
+
+    for asset in weighted_list:
+        print("\n", asset)
+
+    print("Cumulative percentage assigned: ", cumulative_weight)
+
+    return weighted_list
+
+assign_weights(stockA, stockB, stockC, stockD)
+
+
+def weighted_risk(*assets):
+    """Takes variable number of assets and their weights as a list, and calculates the weighted portfolio risk"""
+    print(assets)
+
 
 # --- Main body of the program (genetic algorithm) ---
+def main():
 
     # Take user input on number of assets to include and target correlation
+    def targetNumAssets():
+        print("\nAssets in dataset: ", len(data))
+        try:
+            userChoice = int(input("\nSelect a number of assets to run correlation on."))
 
+            if (userChoice > len(data)):
+                print("Select a valid number of assets to correlate.")
+                targetNumAssets()
+            elif (userChoice <2):
+                print("You cannot correlate less than 2 assets.")
+                targetNumAssets()
+            else:
+                print(int(userChoice))
+        except:
+            print("You must enter an integer.")
+            targetNumAssets()
+
+    targetNumAssets()
+
+    def targetRisk():
+        try:
+            userTarget = float(input("Enter a target risk (standard deviation) for the assets to reach."))
+            print("Target Risk: ", userTarget)
+        except:
+            print("You must enter a valid target Risk.")
+            targetRisk()
+
+    targetRisk()
+    
     # Take variable number of assets and their historical prices
+    def combineAssets(dataset, num, iterations):
+        """Takes a dataset of assets and combines num number of them together randomly iterations number of times.
+        Returns a list of the assets and their portfolio weighted risk"""
 
-    # Compute statistical functions and find correlation of different combinations
+        for attempt in range(len(iterations)):
+            # Combine [num] assets from [dataset] into a weighted-portfolio-risk calculation
+            print(attempt)
     
     # Randomly combine different assets using random weights
+
+    # Compute portfolio risk of different combinations
     
-    # Assess fit of correlation to within acceptable error of target
+    # Assess fit of weighted portfolio risk to within acceptable error of target
     
     # Discard lowest quartile and re-run algorithm if outside of bounds
     
     # Return resulting successful mix with proportions of assets
+
+#main()
