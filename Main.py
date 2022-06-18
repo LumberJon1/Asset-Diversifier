@@ -122,19 +122,14 @@ def correlationMap(dataset):
     i = 0
     while i < len(dataset):
         for list in dataset:
-            print("\n", list[0], dataset[i][0])
-            print("list: ", list)
-            print("i: ", i)
-            print("dataset[i]: ", dataset[i])
-            print("dataset.index(list): ", dataset.index(list))
+            
+            # Only run the correlation if the loop is looking at a unique pair of tickers
             if (list != dataset[i]) & (dataset.index(list) > i):
                 print("Running correlation between "+list[0]+" and "+dataset[i][0]+"...")
+                # Append a list of both tickers in a sublist and the correlation value to results
                 results.append([[list[0], dataset[i][0]], [correlate(list, dataset[i])]])
         i += 1
-        
-    print(results)
-    
-correlationMap(data)
+
 
 # --- Main body of the program (genetic algorithm) ---
 
