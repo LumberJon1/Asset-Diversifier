@@ -1,5 +1,6 @@
 
 import math
+from operator import indexOf
 import random
 
 # Define mock datasets
@@ -126,7 +127,6 @@ def correlationMap(dataset):
             
             # Only run the correlation if the loop is looking at a unique pair of tickers
             if (list != dataset[i]) & (dataset.index(list) > i):
-                print("Running correlation between "+list[0]+" and "+dataset[i][0]+"...")
                 # Append a list of both tickers in a sublist and the correlation value to results
                 results.append([[list[0], dataset[i][0]], [correlate(list, dataset[i])]])
         i += 1
@@ -146,13 +146,10 @@ def assign_weights(*assets):
     for asset in assets:
 
         weight = random.uniform(0,1)
-        print("Proposed weight: ", weight)
 
         # Assess whether this weight would cause the cumulative weight to exceed 1
         if (cumulative_weight + weight > 1):
-            print("This weight would exceed 100%.  Modifying...")
             weight = 1 - cumulative_weight
-            print("Modified to ", weight)
 
         weighted_list.append([asset[0], stdDev(asset), weight])
         cumulative_weight += weight
@@ -167,16 +164,28 @@ def assign_weights(*assets):
             empty_weights.append(asset[0])
 
     # Then find those tickers in the weighted_list and assign them new weights by dividing the largest weight
+
+    divisor = len(empty_weights)
+    largest = 0
+    largest_index = 0
+
+    # Find the largest weight and its index
+    for asset in weighted_list:
+        if (asset[2] > largest):
+            largest = asset[2]
+            largest_index = weighted_list.index(asset)
+
+    # Once the largest index has been assigned, use it to allocate its weight to empty weights
     for asset in weighted_list:
         if (asset[0] in empty_weights):
-            print("Empty asset weight:", asset)
 
-            
+            # Assign random new weight and reduce largest by that amount
+            new_weight = random.uniform(0.0001, (largest / divisor))
+            asset[2] = new_weight
+            weighted_list[largest_index][2] -= new_weight
 
     for asset in weighted_list:
         print("\n", asset)
-
-    print("Cumulative percentage assigned: ", cumulative_weight)
 
     return weighted_list
 
